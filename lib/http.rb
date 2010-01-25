@@ -9,25 +9,25 @@ module NetRecorder
         # request is overridden and the request and response are stored as a hash that can be written to a cache file
         def request(req, body = nil, &block)
           response = alias_for_request(req, body)
-          
+
           return response unless NetRecorder.recording?
-          
+
           scope = NetRecorder.scope || 'global'
           path = "http://#{req.bauth if req.bauth}#{req['host']}#{req.path}"
-          
+
           existing_fake = @@fakes.detect{|fake| fake[0] == path && fake[1][scope] && fake[1][scope][:method] == req.method}
           existing_fake[1][scope][:response] << {:response => response} and return response if existing_fake
-          
+
           @@fakes << [path, {scope => {:method => req.method, :response => [{:response => response}]}}]
           yield response if block
           response
         end
-        
+
         # returns the fakes hash
         def self.fakes
           @@fakes
         end
-        
+
         def self.clear_netrecorder_cache! #:nodoc:
           @@fakes = []
         end

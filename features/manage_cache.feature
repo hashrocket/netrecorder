@@ -20,7 +20,7 @@ Scenario: Cache a page with a Net::HTTP request with a block
 
 Scenario: Clear the cache
   Given caching is turned on
-  Given a clear cache
+  And a clear cache
   And a cached example page
   When I delete the cache
   Then the cache should be empty
@@ -29,13 +29,13 @@ Scenario: Cache the same page twice
   Given caching is turned on
   And a clear cache
   When I visit "http://www.example.com"
-  When I visit "http://www.example.com"
+  And I visit "http://www.example.com"
   And I save the cache
   Then the example entry should have 2 responses
 
 Scenario: Load from a cache
   Given caching is turned on
-  Given a clear cache
+  And a clear cache
   And a cached example page
   And I have turned on fakeweb
   Then I should not hit the web if i visit the example page
